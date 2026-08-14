@@ -1,14 +1,11 @@
-package main
+package solution
 
 import (
 	"bufio"
-	"encoding/json"
 	"fmt"
 	"os"
-	"reflect"
 	"strconv"
 	"strings"
-	"time"
 )
 
 type Stats struct {
@@ -18,16 +15,13 @@ type Stats struct {
 	Total int
 }
 
-const StatsFilePath = "../output/stats.json"
-const MeasurementsFilePath = "../measurements.txt"
+type Solution1 struct {
+	DefaultSolution
+	MeasurementsFilePath string
+}
 
-const SaveOutputFlag = false
-
-// output format: <weather-station>=<min>/<mean>/<max>
-func main() {
-	start := time.Now()
-
-	file, err := os.Open(MeasurementsFilePath)
+func (s Solution1) Solve() {
+	file, err := os.Open(s.MeasurementsFilePath)
 	if err != nil {
 		fmt.Println("Error opening file:", err)
 		os.Exit(1)
@@ -42,28 +36,21 @@ func main() {
 	cnt := 0
 	for scanner.Scan() {
 		input := scanner.Text()
-		calculateAverage(input, store)
-		progressTracker(cnt)
+		s.calculateAverage(input, store)
+		s.progressTracker(cnt)
 		cnt++
 	}
+	fmt.Printf("\n\n")
 
 	if err := scanner.Err(); err != nil {
 		fmt.Println("Error reading file:", err)
 	}
 
 	fmt.Printf("Total Records: %v\n", cnt)
-	fmt.Printf("Result: %v\n", store)
-	fmt.Printf("Execution time: %s\n", time.Since(start))
-
-	if SaveOutputFlag {
-		saveOutput(store)
-	}
-	if cnt != 1_000_000_000 {
-		validateResult(store)
-	}
+	s.saveOutput(store)
 }
 
-func calculateAverage(inputStr string, store map[string]Stats) {
+func (s Solution1) calculateAverage(inputStr string, store map[string]Stats) {
 	input := strings.Split(inputStr, ";")
 	station := input[0]
 	temp, err := strconv.ParseFloat(input[1], 32)
@@ -96,43 +83,12 @@ func calculateAverage(inputStr string, store map[string]Stats) {
 	}
 }
 
-func progressTracker(cnt int) {
-	progressStep := 10_000_000
+func (s Solution1) progressTracker(cnt int) {
+	progressStep := 100_000_000
 	if (cnt % progressStep) == 0 {
 		total := 1_000_000_000 / progressStep
 		finished := cnt / progressStep
 		fmt.Printf("\rProgress: [%s%s] %d%%",
 			strings.Repeat("#", finished), strings.Repeat(" ", total-finished), finished*100/total)
-	}
-}
-
-func saveOutput(stats map[string]Stats) {
-	jsonBytes, err := json.MarshalIndent(stats, "", "  ")
-	if err != nil {
-		panic(err)
-	}
-
-	err = os.WriteFile(StatsFilePath, jsonBytes, 0644)
-	if err != nil {
-		panic(err)
-	}
-}
-
-func validateResult(actual map[string]Stats) {
-	jsonBytes, err := os.ReadFile(StatsFilePath)
-	if err != nil {
-		panic(err)
-	}
-
-	var expected map[string]Stats
-	if err := json.Unmarshal(jsonBytes, &expected); err != nil {
-		panic(err)
-	}
-
-	// Compare using reflect.DeepEqual
-	if reflect.DeepEqual(expected, actual) {
-		fmt.Println("Map matches stats.json")
-	} else {
-		fmt.Println("Failed: map does NOT match stats.json")
 	}
 }
