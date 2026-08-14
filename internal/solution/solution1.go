@@ -8,13 +8,6 @@ import (
 	"strings"
 )
 
-type Stats struct {
-	Min   float32
-	Mean  float32
-	Max   float32
-	Total int
-}
-
 type Solution1 struct {
 	DefaultSolution
 	MeasurementsFilePath string

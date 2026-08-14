@@ -7,6 +7,13 @@ import (
 	"strings"
 )
 
+type Stats struct {
+	Min   float32
+	Mean  float32
+	Max   float32
+	Total int
+}
+
 type Solution interface {
 	Solve()
 	saveOutput(stats map[string]Stats)
