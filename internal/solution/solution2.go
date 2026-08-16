@@ -129,13 +129,3 @@ func (s Solution2) consolidateMaps(stores []map[string]Stats2) map[string]Stats2
 	}
 	return finalStore
 }
-
-func (s Solution2) progressTracker(cnt int) {
-	progressStep := 100_000_000
-	if (cnt % progressStep) == 0 {
-		total := 1_000_000_000 / progressStep
-		finished := cnt / progressStep
-		fmt.Printf("\rProgress: [%s%s] %d%%",
-			strings.Repeat("#", finished), strings.Repeat(" ", total-finished), finished*100/total)
-	}
-}

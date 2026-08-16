@@ -9,7 +9,7 @@ import (
 	solution "github.com/gvarma28/1brc/internal/solution"
 )
 
-const RunSolution = "2"
+const RunSolution = "3"
 
 // output format: <weather-station>=<min>/<mean>/<max>
 func main() {
@@ -26,7 +26,7 @@ func main() {
 	outputFilePath := fmt.Sprintf("./output/output%s.txt", RunSolution)
 	const measurementsFilePath = "./measurements.txt"
 
-	var s solution.Solution = solution.Solution2{
+	var s solution.Solution = solution.Solution3{
 		MeasurementsFilePath: measurementsFilePath,
 		DefaultSolution: solution.DefaultSolution{
 			OutputFilePath: outputFilePath,
